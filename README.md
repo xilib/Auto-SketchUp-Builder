@@ -20,12 +20,12 @@
 **测试组一**
 | 原图 (Input) | 生成的 3D 模型 (Output) |
 | :---: | :---: |
-| <img src="samples/1.jpg" width="400"> | <img src="samples/2.png" width="400"> |
+| <img src="samples/1.jpg" width="400"> | <img src="samples/4.png" width="400"> |
 
 **测试组二**
 | 原图 (Input) | 生成的 3D 模型 (Output) |
 | :---: | :---: |
-| <img src="samples/3.png" width="400"> | <img src="samples/4.png" width="400"> |
+| <img src="samples/3.png" width="400"> | <img src="samples/2.png" width="400"> |
 
 ### 🚀 使用指南
 
@@ -69,12 +69,12 @@ An AI-powered architectural agent that translates 2D building images into 3D par
 **Group 1**
 | Input Image | Generated 3D Model |
 | :---: | :---: |
-| <img src="samples/1.jpg" width="400"> | <img src="samples/2.png" width="400"> |
+| <img src="samples/1.jpg" width="400"> | <img src="samples/4.png" width="400"> |
 
 **Group 2**
 | Input Image | Generated 3D Model |
 | :---: | :---: |
-| <img src="samples/3.png" width="400"> | <img src="samples/4.png" width="400"> |
+| <img src="samples/3.png" width="400"> | <img src="samples/2.png" width="400"> |
 
 ### 🚀 Usage Guide
 
