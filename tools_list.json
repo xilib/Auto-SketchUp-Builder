@@ -1,0 +1,265 @@
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "tools": [
+      {
+        "name": "get_model_info",
+        "description": "获取当前 SketchUp 模型的概要信息，包括文件名、路径、实体数量、图层/标签列表、组件定义、模型边界等。",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "annotations": {
+          "read_only_hint": true,
+          "destructive_hint": false,
+          "idempotent_hint": true,
+          "open_world_hint": false
+        }
+      },
+      {
+        "name": "get_selection",
+        "description": "获取当前 SketchUp 中选中的实体列表及其详细信息。",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string",
+              "description": "信息详细程度: brief (简要) 或 full (完整)",
+              "enum": [
+                "brief",
+                "full"
+              ]
+            }
+          }
+        },
+        "annotations": {
+          "read_only_hint": true,
+          "destructive_hint": false,
+          "idempotent_hint": true
+        }
+      },
+      {
+        "name": "create_geometry",
+        "description": "在 SketchUp 中创建几何体。支持创建面 (face)、边 (edge)、组 (group) 和组件实例 (component_instance)。所有坐标单位为英寸 (SketchUp 内部单位)。",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "description": "要创建的几何类型",
+              "enum": [
+                "face",
+                "edge",
+                "group_with_faces",
+                "box"
+              ]
+            },
+            "points": {
+              "type": "array",
+              "description": "点坐标数组，每个点为 [x, y, z]。face: 至少 3 个点; edge: 2 个点; box: 不需要",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              }
+            },
+            "origin": {
+              "type": "array",
+              "description": "box 类型的原点 [x, y, z]，默认 [0,0,0]",
+              "items": {
+                "type": "number"
+              }
+            },
+            "width": {
+              "type": "number",
+              "description": "box 宽度 (X 方向)，单位英寸"
+            },
+            "depth": {
+              "type": "number",
+              "description": "box 深度 (Y 方向)，单位英寸"
+            },
+            "height": {
+              "type": "number",
+              "description": "box 高度 (Z 方向)，单位英寸"
+            },
+            "name": {
+              "type": "string",
+              "description": "组/组件名称 (可选)"
+            }
+          },
+          "required": [
+            "type"
+          ]
+        },
+        "annotations": {
+          "destructive_hint": true,
+          "idempotent_hint": false
+        }
+      },
+      {
+        "name": "transform_entities",
+        "description": "对 SketchUp 实体执行几何变换：平移 (move)、旋转 (rotate)、缩放 (scale)。通过 entity_id 指定目标实体。",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "entity_ids": {
+              "type": "array",
+              "description": "目标实体 ID 数组",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "transform_type": {
+              "type": "string",
+              "description": "变换类型",
+              "enum": [
+                "move",
+                "rotate",
+                "scale"
+              ]
+            },
+            "vector": {
+              "type": "array",
+              "description": "move: 平移向量 [dx, dy, dz]; scale: 缩放因子 [sx, sy, sz]",
+              "items": {
+                "type": "number"
+              }
+            },
+            "angle": {
+              "type": "number",
+              "description": "rotate: 旋转角度 (度)"
+            },
+            "axis": {
+              "type": "array",
+              "description": "rotate: 旋转轴向量 [x, y, z]，默认 [0,0,1]",
+              "items": {
+                "type": "number"
+              }
+            },
+            "center": {
+              "type": "array",
+              "description": "rotate/scale: 中心点 [x, y, z]，默认 [0,0,0]",
+              "items": {
+                "type": "number"
+              }
+            }
+          },
+          "required": [
+            "entity_ids",
+            "transform_type"
+          ]
+        },
+        "annotations": {
+          "destructive_hint": true,
+          "idempotent_hint": false
+        }
+      },
+      {
+        "name": "set_material",
+        "description": "为 SketchUp 实体设置材质。支持设置颜色 (RGB/名称)、透明度。",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "entity_ids": {
+              "type": "array",
+              "description": "目标实体 ID 数组",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "color": {
+              "type": "string",
+              "description": "颜色值，支持格式: 颜色名称 (如 \"Red\")、HEX (如 \"#FF0000\")、RGB (如 \"255,0,0\")"
+            },
+            "alpha": {
+              "type": "number",
+              "description": "不透明度 0.0~1.0，默认 1.0"
+            },
+            "back_face": {
+              "type": "boolean",
+              "description": "是否设置背面材质（仅对 Face 有效），默认 false"
+            }
+          },
+          "required": [
+            "entity_ids",
+            "color"
+          ]
+        },
+        "annotations": {
+          "destructive_hint": true,
+          "idempotent_hint": true
+        }
+      },
+      {
+        "name": "get_entity_info",
+        "description": "根据 entity_id 获取实体的详细信息，包含几何属性、材质、变换等。",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "entity_ids": {
+              "type": "array",
+              "description": "目标实体 ID 数组",
+              "items": {
+                "type": "integer"
+              }
+            }
+          },
+          "required": [
+            "entity_ids"
+          ]
+        },
+        "annotations": {
+          "read_only_hint": true,
+          "destructive_hint": false,
+          "idempotent_hint": true
+        }
+      },
+      {
+        "name": "delete_entities",
+        "description": "根据 entity_id 删除 SketchUp 中的实体。支持批量删除。",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "entity_ids": {
+              "type": "array",
+              "description": "要删除的实体 ID 数组",
+              "items": {
+                "type": "integer"
+              }
+            }
+          },
+          "required": [
+            "entity_ids"
+          ]
+        },
+        "annotations": {
+          "destructive_hint": true,
+          "idempotent_hint": false
+        }
+      },
+      {
+        "name": "execute_ruby",
+        "description": "在 SketchUp Ruby 环境中执行任意 Ruby 代码。可以直接调用所有 SketchUp API。返回代码的最后表达式值。⚠️ 注意: 此工具具有完全权限，请谨慎使用。",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "要执行的 Ruby 代码字符串"
+            }
+          },
+          "required": [
+            "code"
+          ]
+        },
+        "annotations": {
+          "destructive_hint": true,
+          "idempotent_hint": false,
+          "open_world_hint": true
+        }
+      }
+    ]
+  }
+}

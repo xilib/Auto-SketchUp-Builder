@@ -1,0 +1,14 @@
+﻿.env
+__pycache__/
+*.pyc
+logs/
+temp/
+*.log
+scratch/
+.idea/
+.vscode/
+*.png
+*.jpg
+
+!samples/*.png
+!samples/*.jpg
